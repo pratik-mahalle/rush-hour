@@ -1,0 +1,28 @@
+name: Checks
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  web:
+    name: Web tests, types, and build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run typecheck
+      - run: npm run build
+  mac:
+    name: Native billing and app build
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - run: ./mac-agent/test.sh
+      - run: ./mac-agent/build.sh
