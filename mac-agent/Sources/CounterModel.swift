@@ -65,10 +65,10 @@ final class CounterModel: ObservableObject {
         }
         listener.onFailure = { [weak self] message in self?.pause(); self?.error = message }
         observers.append(NSWorkspace.shared.notificationCenter.addObserver(forName: NSWorkspace.willSleepNotification, object: nil, queue: .main) { [weak self] _ in
-            Task { @MainActor in self?.pause(); self?.reply = "Paused for sleep. Start listening when you're back." }
+            Task { @MainActor [weak self] in self?.pause(); self?.reply = "Paused for sleep. Start listening when you're back." }
         })
         observers.append(NotificationCenter.default.addObserver(forName: .AVAudioEngineConfigurationChange, object: nil, queue: .main) { [weak self] _ in
-            Task { @MainActor in
+            Task { @MainActor [weak self] in
                 guard let self, self.listening else { return }
                 self.pause(); self.error = "Audio device changed. Start listening to use the new microphone."
             }
